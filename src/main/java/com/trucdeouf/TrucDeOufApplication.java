@@ -40,8 +40,7 @@ public class TrucDeOufApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		/*Set<User> listUser = new HashSet<>();*/
-		/*Set<Post> ListCategories = new HashSet<>();*/
+		
 		Role admin = new Role(null,"ADMIN",null);
 		roleRepository.save(admin);
 		
@@ -55,14 +54,14 @@ public class TrucDeOufApplication implements CommandLineRunner {
 		Categorie action = new Categorie(null, "Action", null);
 		categorieRepository.save(action);
 		
-		Post post1 = new Post("Test1", "Ceci est mon premier test", LocalDateTime.now(), 1, user1, action, null);
+		Post post1 = new Post("Test1", "Ceci est mon premier test", 1, user1, action, null);
 		postRepository.save(post1);
 		
-		/*ListCategories.add(post1);*/
-		Comment commentaire = new Comment(null, "De la bombe ton site",null, post1, user1);
+		
+		Comment commentaire = new Comment("De la bombe ton site", post1, user1);
 		commentRepository.save(commentaire);
 		
-		postRepository.save(new Post("Test2", "Ceci est mon deuxieme test", LocalDateTime.now(), 1, null, null, null));
+		postRepository.save(new Post("Test2", "Ceci est mon deuxieme test", 1, null, action, null));
 	}
 
 }
