@@ -9,15 +9,16 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 import org.hibernate.validator.constraints.Length;
 
+import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Data
@@ -25,6 +26,7 @@ import lombok.NoArgsConstructor;
 public class Post {
 	
 	@Id @GeneratedValue( strategy = GenerationType.IDENTITY)
+	@Setter(AccessLevel.NONE)
 	@Column(name = "post_id")
 	private Long id;
 	
@@ -36,25 +38,30 @@ public class Post {
 	private String body;
 	
 	@Column(name = "create_date")
-	private LocalDateTime createDate;
+	private LocalDateTime createDate = LocalDateTime.now();
 	 
 	private int vote;
 	
 	@ManyToOne
-    private User author;
+    private User user;
+	
+	@ManyToOne 
+	@JoinColumn(name = "categorie_id", referencedColumnName = "categorie_id")
+	private Categorie categorie;
 	
 	@OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
     private Collection<Comment> comments;
 
+	
 	public Post(@Length(min = 5, max = 50, message = "*Your title must have at least 5 characters") String title,
-			String body, LocalDateTime createDate, int vote, User author) {
+			String body, int vote, User user, Categorie categorie, Collection<Comment> comments) {
 		this.title = title;
 		this.body = body;
-		this.createDate = createDate;
 		this.vote = vote;
-		this.author = author;
+		this.user = user;
+		this.categorie = categorie;
+		this.comments = comments;
 	}
-	
 	
 
 }

@@ -1,6 +1,5 @@
 package com.trucdeouf.entities;
 
-
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -17,38 +16,48 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.CreationTimestamp;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class Comment {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "comment_id")
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Setter(AccessLevel.NONE)
+	@Column(name = "comment_id")
+	private Long id;
 
-    @Column(name = "body", columnDefinition = "TEXT")
-    @NotEmpty(message = "*Please write something")
-    private String body;
+	@Column(name = "body", columnDefinition = "TEXT", length = 350)
+	@NotEmpty(message = "*Please write something")
+	private String body;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "create_date", nullable = false, updatable = false)
-    @CreationTimestamp
-    private Date createDate;
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "create_date", nullable = false, updatable = false)
+	@CreationTimestamp
+	private Date createDate;
 
-    @ManyToOne
-    @JoinColumn(name = "post_id", referencedColumnName = "post_id", nullable = false)
-    @NotNull
-    private Post post;
+	@ManyToOne
+	@JoinColumn(name = "post_id", referencedColumnName = "post_id", nullable = false)
+	@NotNull
+	private Post post;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
-    @NotNull
-    private User user;
-    
+	@ManyToOne
+	@JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
+	@NotNull
+	private User user;
+	
+	
+	public Comment(@NotEmpty(message = "*Please write something") String body, @NotNull Post post, @NotNull User user) {
+		this.body = body;
+		this.post = post;
+		this.user = user;
+	}
+
+
 }
