@@ -1,6 +1,7 @@
 package com.trucdeouf.entities;
 
 import java.util.Collection;
+import java.util.HashSet;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,6 +9,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -31,6 +34,7 @@ public class Role {
 	private String role;
 
 	@ManyToMany(mappedBy = "roles")
-	private Collection<User> users;
+	@JsonIgnore
+	private Collection<User> users = new HashSet<User>();
 
 }

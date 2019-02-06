@@ -2,6 +2,7 @@ package com.trucdeouf.entities;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.HashSet;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -30,17 +31,25 @@ public class Post {
 	@Column(name = "post_id")
 	private Long id;
 	
-	@Column(nullable = false)
+	@Column(nullable = false, unique=true)
     @Length(min = 5, max = 50, message = "*Your title must have at least 5 characters")
 	private String title;
 	
 	@Column(nullable = false)
 	private String body;
 	
+	@Setter(AccessLevel.PROTECTED)
 	@Column(name = "create_date")
 	private LocalDateTime createDate = LocalDateTime.now();
+	
+	
+	@Column(name = "last_modified")
+	private LocalDateTime lastModified;
 	 
 	private int vote;
+	
+	@Column(nullable = false)
+	private Boolean status = false;
 	
 	@ManyToOne
     private User user;
@@ -50,7 +59,7 @@ public class Post {
 	private Categorie categorie;
 	
 	@OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
-    private Collection<Comment> comments;
+    private Collection<Comment> comments = new HashSet<Comment>();
 
 	
 	public Post(@Length(min = 5, max = 50, message = "*Your title must have at least 5 characters") String title,

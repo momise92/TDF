@@ -16,6 +16,8 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.CreationTimestamp;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -44,11 +46,13 @@ public class Comment {
 	@ManyToOne
 	@JoinColumn(name = "post_id", referencedColumnName = "post_id", nullable = false)
 	@NotNull
+	@JsonIgnore
 	private Post post;
 
 	@ManyToOne
 	@JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
 	@NotNull
+	@JsonIgnore
 	private User user;
 	
 	

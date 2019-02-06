@@ -1,6 +1,6 @@
 package com.trucdeouf;
 
-import java.time.LocalDateTime;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
+import org.springframework.context.annotation.Bean;
 
 import com.trucdeouf.dao.CategorieRepository;
 import com.trucdeouf.dao.CommentRepository;
@@ -20,7 +22,14 @@ import com.trucdeouf.entities.Post;
 import com.trucdeouf.entities.Role;
 import com.trucdeouf.entities.User;
 
-@SpringBootApplication
+import springfox.documentation.builders.PathSelectors;
+import springfox.documentation.builders.RequestHandlerSelectors;
+import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spring.web.plugins.Docket;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
+
+@SpringBootApplication(exclude={UserDetailsServiceAutoConfiguration.class})
+@EnableSwagger2
 public class TrucDeOufApplication implements CommandLineRunner {
 
 	@Autowired
@@ -37,6 +46,15 @@ public class TrucDeOufApplication implements CommandLineRunner {
 	public static void main(String[] args) {
 		SpringApplication.run(TrucDeOufApplication.class, args);
 	}
+	
+	@Bean
+    public Docket apiDocket() {
+        return new Docket(DocumentationType.SWAGGER_2)
+                .select()
+                .apis(RequestHandlerSelectors.basePackage("com.trucdeouf.controller"))
+                .paths(PathSelectors.any())
+                .build();
+    }
 
 	@Override
 	public void run(String... args) throws Exception {
@@ -44,10 +62,11 @@ public class TrucDeOufApplication implements CommandLineRunner {
 		Role admin = new Role(null,"ADMIN",null);
 		roleRepository.save(admin);
 		
-		Set<Role> listRole = new HashSet<>();
-		listRole.add(admin);
+		/*Set<Role> listRole = new HashSet<>();
+		listRole.add(admin);*/
 		
-		User user1 = new User("leboss2@email.com", "password", "Hasho", "Carter","mylastname",true,null,listRole,null);
+		User user1 = new User(null,"leboss2@email.com", "password", "Hasho", "Carter","mylastname",true);
+		user1.addRole(admin);
 		userRepository.save(user1);
 		
 		/*listUser.add(user1);*/

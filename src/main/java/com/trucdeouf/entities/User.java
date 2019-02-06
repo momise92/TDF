@@ -1,7 +1,9 @@
 package com.trucdeouf.entities;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -20,6 +22,7 @@ import javax.validation.constraints.NotEmpty;
 import org.hibernate.validator.constraints.Length;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AccessLevel;
 import lombok.Data;
@@ -36,9 +39,10 @@ public class User {
 	@Setter(AccessLevel.NONE)
 	@Column(name = "user_id")
 	private Long id;
-	
-	@Column(name = "create_date", nullable = false, updatable = false)
-	private LocalDateTime createDate = LocalDateTime.now();
+
+	@Column(name = "register_Date", nullable = false, updatable = false)
+	@Setter(AccessLevel.PROTECTED)
+	private LocalDateTime registerDate = LocalDateTime.now();
 
 	@Column(unique = true, nullable = false)
 	@Email(message = "*Please provide a valid Email")
@@ -48,7 +52,7 @@ public class User {
 	@Column(name = "password", nullable = false)
 	@Length(min = 5, message = "*Your password must have at least 5 characters")
 	@NotEmpty(message = "*Please provide your password")
-	@JsonIgnore
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private String password;
 
 	@Column(name = "username", nullable = false, unique = true)
@@ -67,31 +71,28 @@ public class User {
 	private Boolean active;
 
 	@OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
-	private Collection<Post> posts;
+	@JsonIgnore
+	private Collection<Post> posts = new ArrayList<Post>();
 
 	@ManyToMany
 	@JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
-	private Set<Role> roles;
+	private Set<Role> roles = new HashSet<Role>();
 
 	@OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
-	private Collection<Comment> comments;
+	private Collection<Comment> comments = new HashSet<Comment>();
 
-	public User(
-			@Email(message = "*Please provide a valid Email") @NotEmpty(message = "*Please provide an email") String email,
-			@Length(min = 5, message = "*Your password must have at least 5 characters") @NotEmpty(message = "*Please provide your password") String password,
-			@Length(min = 4, max = 20, message = "*Your username must have at least 4 characters") @NotEmpty(message = "*Please provide your name") String username,
-			@NotEmpty(message = "*Please provide your name") String name,
-			@NotEmpty(message = "*Please provide your last name") String lastName, Boolean active,
-			Collection<Post> posts, Set<Role> roles, Collection<Comment> comments) {
+	public User(Long id, String email, String password, String username, String name, String lastName, Boolean active) {
+		this.id = id;
 		this.email = email;
 		this.password = password;
 		this.username = username;
 		this.name = name;
 		this.lastName = lastName;
 		this.active = active;
-		this.posts = posts;
-		this.roles = roles;
-		this.comments = comments;
+	}
+
+	public void addRole(Role role) {
+		this.roles.add(role);
 	}
 
 }

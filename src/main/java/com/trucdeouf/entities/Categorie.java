@@ -1,6 +1,7 @@
 package com.trucdeouf.entities;
 
 import java.util.Collection;
+import java.util.HashSet;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -9,6 +10,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -32,6 +35,7 @@ public class Categorie {
 	private String name;
 
 	@OneToMany(mappedBy = "categorie", cascade = CascadeType.MERGE)
-	private Collection<Post> posts;
+	@JsonIgnore
+	private Collection<Post> posts = new HashSet<Post>();
 
 }
